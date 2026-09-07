@@ -73,7 +73,7 @@ async def connect_justworks(ctx, params: ConnectParams) -> ActionResult[Connecti
     }
     conns.append(record)
     await _save_connections(ctx, conns)
-    return ActionResult.ok(
+    return ActionResult.success(
         ConnectionRecord(
             id=cid,
             label=record["label"],
@@ -105,7 +105,7 @@ async def list_connections(ctx, params: NoParams) -> ActionResult[ConnectionList
         )
         for c in conns
     ]
-    return ActionResult.ok(ConnectionList(connections=records, total=len(records)))
+    return ActionResult.success(ConnectionList(connections=records, total=len(records)), summary="Connections listed.")
 
 @chat.function(
     "disconnect_justworks",
@@ -131,4 +131,4 @@ async def disconnect_justworks(ctx, params: ConnectionIdParams) -> ActionResult[
     if new_conns and not any(c.get("is_active") for c in new_conns):
         new_conns[0]["is_active"] = True
     await _save_connections(ctx, new_conns)
-    return ActionResult.ok(DeleteResult(id=target, deleted=True, message="Disconnected successfully."))
+    return ActionResult.success(DeleteResult(id=target, deleted=True, message="Disconnected successfully."), summary="Justworks disconnected.")
